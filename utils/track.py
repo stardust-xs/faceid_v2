@@ -19,12 +19,19 @@
 from math import cos, radians, sin
 from typing import Optional, Tuple, Union
 
-import cv2
-import numpy as np
-
 # TODO(xames3): Remove suppressed pylint warnings.
 # pyright: reportMissingImports=false
-import dlib
+import numpy as np
+from cv2 import INTER_LINEAR, getRotationMatrix2D, warpAffine
+
+
+def align_face(feed: np.ndarray, angle: int) -> np.ndarray:
+  """Align face when tilted."""
+  if angle == 0:
+    return feed
+  height, width = feed.shape[:2]
+  rot_mat = getRotationMatrix2D((width / 2, height / 2), angle, 0.9)
+  return warpAffine(feed, rot_mat, (width, height), flags=INTER_LINEAR)
 
 
 def align_face_coords(feed: np.ndarray, position: Tuple, angle: int):
