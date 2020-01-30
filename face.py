@@ -18,24 +18,19 @@
 
 # TODO(xames3): Remove suppressed pylint warnings.
 # pyright: reportMissingImports=false
-import random
-
-from imutils.video import VideoStream
 import numpy as np
-import imutils
 import time
 import cv2
-from cv2 import destroyAllWindows
+import imutils
+from imutils.video import VideoStream
 
-from utils.config.cascades import eyes, frontal_face
-from utils.config.colors import color
-from utils.hud import detected_face
+from utils.hud import detected_face_ml
 from utils.stream import rescale
-from utils.track import align_face
+from utils.config.dev import PROTOTEXT, CAFFEMODEL
 
-model = cv2.dnn.readNetFromCaffe('deploy.prototxt.txt',
-                                 'res10_300x300_ssd_iter_140000.caffemodel')
+model = cv2.dnn.readNetFromCaffe(PROTOTEXT, CAFFEMODEL)
 
+blur = False
 stream = VideoStream(src=0).start()
 time.sleep(2.0)
 
@@ -43,9 +38,9 @@ while True:
   frame = stream.read()
   frame = imutils.resize(frame, width=400)
   h, w = frame.shape[:2]
-  blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0,
-                               (300, 300), (104.0, 177.0, 123.0))
-  model.setInput(blob)
+  face_blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0,
+                                    (300, 300), (104.0, 177.0, 123.0))
+  model.setInput(face_blob)
   detections = model.forward()
   for idx in range(detections.shape[2]):
     confidence = detections[0, 0, idx, 2]
@@ -53,55 +48,20 @@ while True:
       continue
     bounding_box = detections[0, 0, idx, 3:7] * np.array([w, h, w, h])
     start_x, start_y, end_x, end_y = bounding_box.astype('int')
-    detected_face(frame, (start_x, start_y), (end_x, end_y))
+    
+    if blur:
+      frame[start_y:end_y, start_x:end_x] = cv2.blur(
+          frame[start_y:end_y, start_x:end_x], (25, 25))
+
+    detected_face_ml(frame, (start_x, start_y), (end_x, end_y))
   cv2.imshow('Face tracking', rescale(frame))
+
+  if cv2.waitKey(5) & 0xFF == ord('b'):
+    blur = not blur
+
   if cv2.waitKey(5) & 0xFF == int(27):
     exit(1)
     break
 
-destroyAllWindows()
+cv2.destroyAllWindows()
 stream.stop()
-
-
-# stream = cv2.VideoCapture(0)
-
-# while True:
-#   state, color_feed = stream.read()
-#   if state:
-#     gray_feed = cv2.cvtColor(color_feed, cv2.COLOR_BGR2GRAY)
-#     faces = frontal_face.detectMultiScale(gray_feed, 1.3, 5)
-#     for x, y, w, h in faces:
-#       if len(faces) == 1:
-#         detected_face(color_feed, x, y, w, h)
-#       elif len(faces) > 1:
-#         detected_face(color_feed, x, y, w, h, random.sample(color, 3))
-#     cv2.imshow('Face tracking', rescale(color_feed))
-#     if cv2.waitKey(5) & 0xFF == int(27):
-#       break
-#   else:
-#     print('No stream available.')
-
-# stream.release()
-# cv2.destroyAllWindows()
-
-# stream = cv2.VideoCapture(0)
-
-# while True:
-#   state, color_feed = stream.read()
-#   color_feed = rescale(color_feed)
-#   if state:
-#     gray_feed = cv2.cvtColor(color_feed, cv2.COLOR_BGR2GRAY)
-#     faces = frontal_face.detectMultiScale(gray_feed, 1.3, 5)
-#     for x, y, w, h in faces:
-#       if len(faces) == 1:
-#         detected_face(color_feed, x, y, w, h)
-#       elif len(faces) > 1:
-#         detected_face(color_feed, x, y, w, h, random.sample(color, 3))
-#     cv2.imshow('Face tracking', color_feed)
-#     if cv2.waitKey(5) & 0xFF == int(27):
-#       break
-#   else:
-#     print('No stream available.')
-
-# stream.release()
-# cv2.destroyAllWindows()
