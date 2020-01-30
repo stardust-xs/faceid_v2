@@ -26,22 +26,24 @@ from cv2 import INTER_LINEAR, getRotationMatrix2D, warpAffine
 
 
 def align_face(feed: np.ndarray, angle: int) -> np.ndarray:
-  """Align face when tilted."""
+  """Align face when tilted.
+  
+  Align and cover a particular range of tilt of a face.
+
+  Args:
+    feed: Stream feed read by camera.
+    angle: Angle of tilt to compensate.
+
+  Returns:
+    Numpy array of the compensating coordinates for the HUD.
+
+  Example:
+    for angle in [0, -30, 30]:
+      tilted_face = align_face(gray_feed, angle)
+      faces = frontal_face.detectMultiScale(tilted_face, 1.3, 5)
+  """
   if angle == 0:
     return feed
   height, width = feed.shape[:2]
   rot_mat = getRotationMatrix2D((width / 2, height / 2), angle, 0.9)
   return warpAffine(feed, rot_mat, (width, height), flags=INTER_LINEAR)
-
-
-def align_face_coords(feed: np.ndarray, position: Tuple, angle: int):
-  """Return aligned face coordinates."""
-  if angle == 0:
-    return position
-  x = position[0] - feed.shape[1] * 0.4
-  y = position[1] - feed.shape[0] * 0.4
-  new_x = x * cos(radians(angle)) + y * \
-      sin(radians(angle)) + feed.shape[1] * 0.4
-  new_y = -x * sin(radians(angle)) + y * \
-      cos(radians(angle)) + feed.shape[0] * 0.4
-  return int(new_x), int(new_y), position[2], position[3]

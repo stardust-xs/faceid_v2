@@ -18,8 +18,17 @@
 
 import os
 
+# TODO(xames3): Remove suppressed pylint warnings.
+# pyright: reportMissingImports=false
+import cv2
+
 from . import dev
 
 cascades = os.path.join(dev.PROJECT_PATH, dev.CASCADES)
 frontal_face_xml = os.path.join(cascades, 'haarcascade_frontalface_default.xml')
+profile_face_xml = os.path.join(cascades, 'haarcascade_profileface.xml')
 eyes_xml = os.path.join(cascades, 'haarcascade_eye.xml')
+
+frontal_face = cv2.CascadeClassifier(frontal_face_xml)
+profile_face = cv2.CascadeClassifier(profile_face_xml)
+eyes = cv2.CascadeClassifier(eyes_xml)
