@@ -1,3 +1,14 @@
 {
-    "python.pythonPath": "venv\\Scripts\\python.exe"
+    "python.pythonPath": "venv/bin/python",
+    "[python]": {
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": true,
+        "editor.rulers": [
+            72,
+            80
+        ],
+        "editor.tabSize": 2,
+        "editor.wordWrapColumn": 80,
+        "editor.wordWrap": "wordWrapColumn",
+    },
 }

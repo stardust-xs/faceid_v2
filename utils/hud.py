@@ -16,82 +16,59 @@
 # ======================================================================
 """Core utility for overlaying HUDs on top of the detected faces."""
 
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Tuple, Union
 
-import numpy
 # TODO(xames3): Remove suppressed pylint warnings.
 # pyright: reportMissingImports=false
-from cv2 import line, ellipse
+import numpy as np
+from cv2 import rectangle
 
-from . config import colors
+from faceid_v2.config import colors
 
 
-def detected_face(frame: numpy.ndarray,
-                  start_xy: Tuple,
-                  end_xy: Tuple,
-                  thickness: Optional[int] = 1,
-                  color: Optional[Union[List, int, str]] = None) -> None:
-  """Draw rounded square HUD on the face.
+def detect_face(frame: np.ndarray,
+                start_xy: Tuple,
+                end_xy: Tuple,
+                color: Optional[Union[List, int, str]] = None,
+                thickness: Optional[int] = 1) -> None:
+  """Draw bounding box around the detected object.
 
-  Draw rounded square around the detected face. The size of the square
-  adjusts automatically as per the proximity of the face in reference.
+  The size of the bounding box adjusts automatically as per the size of
+  the object in reference.
 
   Args:
     frame: Numpy array from the captured frame.
-    x: X-position/coordinate of the face.
-    y: Y-position/coordinate of the face.
-    w: Width of the face in pixels.
-    h: Height of the face in pixels.
+    start_xy: Tuple of top left coordinates.
+    end_xy: Tuple of bottom right coordinates.
     color: Frame color (default: None -> yellow)
+    thickness: Thickness of the bounding box.
   """
-  start_x, start_y = start_xy
-  end_x, end_y = end_xy
-  radius = trimmed = int(end_x / 30)
   color = colors.yellow if color is None else color
-  line(frame,
-       (start_x + radius, start_y),
-       (start_x + radius + trimmed, start_y), color, thickness)
-  line(frame,
-       (start_x, start_y + radius),
-       (start_x, start_y + radius + trimmed), color, thickness)
-  ellipse(frame,
-          (start_x + radius, start_y + radius),
-          (radius, radius), 180, 0, 90, color, thickness)
-  line(frame,
-       (end_x - radius, start_y),
-       (end_x - radius - trimmed, start_y), color, thickness)
-  line(frame,
-       (end_x, start_y + radius),
-       (end_x, start_y + radius + trimmed), color, thickness)
-  ellipse(frame,
-          (end_x - radius, start_y + radius),
-          (radius, radius), 270, 0, 90, color, thickness)
-  line(frame,
-       (start_x + radius, end_y), 
-       (start_x + radius + trimmed, end_y), color, thickness)
-  line(frame,
-       (start_x, end_y - radius),
-       (start_x, end_y - radius - trimmed), color, thickness)
-  ellipse(frame,
-          (start_x + radius, end_y - radius),
-          (radius, radius), 90, 0, 90, color, thickness)
-  line(frame,
-       (end_x - radius, end_y),
-       (end_x - radius - trimmed, end_y), color, thickness)
-  line(frame,
-       (end_x, end_y - radius),
-       (end_x, end_y - radius - trimmed), color, thickness)
-  ellipse(frame,
-          (end_x - radius, end_y - radius),
-          (radius, radius), 0, 0, 90, color, thickness)
+  return rectangle(frame, start_xy, end_xy, color, thickness)
 
-  # r = int(w / 20)
-  # h = int(h + 0.15 * h)
-  # line(frame, (x + r, y), (x + w - r, y), color)
-  # line(frame, (x + r, y + h), (x + w - r, y + h), color)
-  # line(frame, (x, y + radius), (x, y + h - radius), color)
-  # line(frame, (x + w, y + radius), (x + w, y + h - radius), color)
-  # ellipse(frame, (x + r, y + radius),(radius, r), 180, 0, 90, color)
-  # ellipse(frame, (x + w - r, y + radius),(radius, r), 270, 0, 90, color)
-  # ellipse(frame, (x + r, y + h - radius),(radius, r), 90, 0, 90, color)
-  # ellipse(frame, (x + w - r, y + h - radius),(radius, r), 0, 0, 90, color)
+
+def detect_motion(frame: np.ndarray,
+                  top_x: Union[int],
+                  top_y: Union[int],
+                  btm_x: Union[int],
+                  btm_y: Union[int],
+                  color: Optional[Union[List, int, str]] = None,
+                  thickness: Optional[int] = 1) -> None:
+  """Draw bounding box around the detected object.
+
+  The size of the bounding box adjusts automatically as per the size of
+  the object in reference.
+
+  Args:
+    frame: Numpy array from the captured frame.
+    start_xy: Tuple of top left coordinates.
+    end_xy: Tuple of bottom right coordinates.
+    color: Frame color (default: None -> yellow)
+    thickness: Thickness of the bounding box.
+  """
+  color = colors.green if color is None else color
+  return rectangle(frame,
+                   (top_x, top_y),
+                   (top_x + btm_x, top_y + btm_y),
+                   color,
+                   thickness)

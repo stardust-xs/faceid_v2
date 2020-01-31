@@ -14,19 +14,14 @@
 # limitations under the License.
 #
 # ======================================================================
-"""Utility for simplifing streaming using OpenCV."""
+"""Config utility for defining the IP Camera parameters."""
 
-from math import cos, radians, sin
-from typing import Any, Optional, Tuple, Union
+DEF_PROTOCOL = 'rtsp'
+DEF_USER = 'xxx'
+DEF_PASSWORD = 'xxx'
+DEF_STREAM_ADDR = 'xxx'
+DEF_PORT = 554
+DEF_STREAM_ID = 1
 
-# TODO(xames3): Remove suppressed pylint warnings.
-# pyright: reportMissingImports=false
-import numpy as np
-from cv2 import INTER_AREA, resize
-
-
-def rescale(feed: np.ndarray, width: Optional[int] = 500) -> np.ndarray:
-  """Rescale display feed as per requirement."""
-  ratio = width / feed.shape[1]
-  dimensions = (width, int(feed.shape[0] * ratio))
-  return resize(feed, dimensions, interpolation=INTER_AREA)
+LIVE = (f'{DEF_PROTOCOL}://{DEF_USER}:{DEF_PASSWORD}@{DEF_STREAM_ADDR}:'
+        f'{DEF_PORT}//Streaming/Channels/{DEF_STREAM_ID}')

@@ -14,21 +14,20 @@
 # limitations under the License.
 #
 # ======================================================================
-"""Config utility for initializing cascades."""
+"""Config utility to define colors for the HUDs."""
 
-import os
+import random
 
-# TODO(xames3): Remove suppressed pylint warnings.
-# pyright: reportMissingImports=false
-import cv2
+red = [48, 59, 255]
+blue = [255, 122, 0]
+green = [100, 217, 76]
+yellow = [0, 204, 255]
+orange = [0, 149, 255]
+teal = [250, 200, 90]
+purple = [214, 86, 88]
+pink = [85, 45, 255]
+white = [255, 255, 255]
+black = [0, 0, 0]
 
-from . import dev
-
-cascades = os.path.join(dev.PROJECT_PATH, dev.CASCADES)
-frontal_face_xml = os.path.join(cascades, 'haarcascade_frontalface_default.xml')
-profile_face_xml = os.path.join(cascades, 'haarcascade_profileface.xml')
-eyes_xml = os.path.join(cascades, 'haarcascade_eye.xml')
-
-frontal_face = cv2.CascadeClassifier(frontal_face_xml)
-profile_face = cv2.CascadeClassifier(profile_face_xml)
-eyes = cv2.CascadeClassifier(eyes_xml)
+colors = [red, blue, green, yellow, orange, teal, purple, pink, black]
+color = random.choice(colors)

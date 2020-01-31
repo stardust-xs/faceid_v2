@@ -22,7 +22,7 @@ import os
 PROJECT_NAME = 'faceid_v2'
 PROJECT_LINK = 'https://github.com/xames3/faceid_v2/'
 PROJECT_LICENSE = 'Apache 2.0'
-PROJECT_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_PATH = os.path.dirname(os.path.dirname(__file__))
 
 # This project adheres to Semantic Versioning Specification (SemVer)
 # starting with version 0.0.1.
@@ -46,5 +46,14 @@ LANG_CODE = 'en-gb'
 # Default encoding used for all read-write objects.
 DEF_CHARSET = 'utf-8'
 
-# OpenCV cascades path
-CASCADES = 'venv/Lib/site-packages/cv2/data/'
+# OpenCV models
+FACE_PROTOTEXT = 'deploy.prototxt.txt'
+FACE_CAFFEMODEL = 'res10_300x300_ssd_iter_140000.caffemodel'
+
+# Default urls
+# This url is used for checking if the internet connection exists.
+PING_URL = 'www.google.com'
+PING_PORT = 80
+
+# Confidence scores
+FACE_DETECTING_CONFIDENCE = 0.7

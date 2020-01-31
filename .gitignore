@@ -125,5 +125,5 @@ dmypy.json
 .pyre/
 
 # Ignored on-device directories
-misc/
-mle/data/monitor/
+.vscode/
+archive/
