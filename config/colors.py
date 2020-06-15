@@ -30,4 +30,3 @@ white = [255, 255, 255]
 black = [0, 0, 0]
 
 colors = [red, blue, green, yellow, orange, teal, purple, pink, black]
-color = random.choice(colors)
