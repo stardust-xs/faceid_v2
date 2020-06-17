@@ -24,8 +24,6 @@ import imutils
 import numpy as np
 from imutils.video import VideoStream
 
-# TODO(xames3): Remove suppressed pylint warnings.
-# pyright: reportMissingImports=false
 from faceid_v2.config import dev
 from faceid_v2.utils.hud import detect_face, detect_motion
 
@@ -34,9 +32,11 @@ models_path = os.path.join(dev.PROJECT_PATH, 'models')
 face_prototext = os.path.join(models_path, dev.FACE_PROTOTEXT)
 face_caffemodel = os.path.join(models_path, dev.FACE_CAFFEMODEL)
 face_net = cv2.dnn.readNetFromCaffe(face_prototext, face_caffemodel)
+
 # Setting constants for the service.
 blur = False
 base_frame = None
+
 # Streaming engine
 stream = VideoStream(src=0).start()
 time.sleep(2.0)
@@ -86,8 +86,6 @@ try:
             frame[face_top_y:face_btm_y, face_top_x:face_btm_x], (25, 25))
       detect_face(frame, (face_top_x, face_top_y), (face_btm_x, face_btm_y))
 
-    # cv2.imshow('Motion threshold', motion_threshold)
-    # cv2.imshow('Frame delta', frame_delta)
     cv2.imshow('Live feed', frame)
 
     if cv2.waitKey(5) & 0xFF == ord('b'):
