@@ -37,7 +37,7 @@ face_net = cv2.dnn.readNetFromCaffe(face_prototext, face_caffemodel)
 blur = False
 base_frame = None
 
-# Streaming engine
+# Streaming engine.
 stream = VideoStream(src=0).start()
 time.sleep(2.0)
 
