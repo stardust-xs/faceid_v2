@@ -18,8 +18,6 @@
 
 from typing import List, Optional, Tuple, Union
 
-# TODO(xames3): Remove suppressed pylint warnings.
-# pyright: reportMissingImports=false
 import numpy as np
 from cv2 import rectangle
 
